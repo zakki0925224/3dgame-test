@@ -1,0 +1,7 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:VisualElement style="flex-grow: 1;">
+        <ui:Slider label="HP" value="100" high-value="100" name="HP" enabled="true" focusable="false" style="align-self: flex-end; flex-direction: row; align-items: auto; align-content: auto; width: 500px;" />
+        <ui:Slider label="SP" value="100" high-value="100" name="SP" focusable="false" style="align-self: flex-end; flex-direction: row; align-items: auto; align-content: auto; width: 500px;" />
+        <ui:VisualElement name="Crosshair" style="position: absolute; left: 50%; top: 50%; width: 8px; height: 8px; background-color: white; border-radius: 50%;" />
+    </ui:VisualElement>
+</ui:UXML>
