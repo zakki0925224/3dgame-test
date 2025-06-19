@@ -2,16 +2,28 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private readonly float MoveSpeed = 10.0f;
+    private readonly float MoveSpeed = 10f;
     private readonly float CameraSpeed = 100f;
+    private readonly float JumpForce = 5f;
+    private readonly float FallDamageThreshold = 5f;
+    private readonly float FallDamagePerMeter = 10f;
 
     private Transform CameraTransform;
     private float CameraPitch = 0f;
+
+    private Rigidbody Rigidbody;
+    private bool IsGrounded = true;
+    private bool isFalling = false;
+    private float FallStartY;
+
+    public PlayerStatus PlayerStatus;
 
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
         this.CameraTransform = GetComponentInChildren<Camera>().transform;
+        this.Rigidbody = GetComponent<Rigidbody>();
+        this.PlayerStatus = new PlayerStatus();
     }
 
     void Update()
@@ -44,5 +56,38 @@ public class Player : MonoBehaviour
         move = move.normalized * this.MoveSpeed * Time.deltaTime;
 
         this.transform.position += move;
+
+        if (Input.GetKeyDown(KeyCode.Space) && this.IsGrounded)
+        {
+            this.Rigidbody.AddForce(Vector3.up * this.JumpForce, ForceMode.Impulse);
+            this.IsGrounded = false;
+        }
+
+        // fall
+        if (!this.IsGrounded && !this.isFalling && this.Rigidbody.linearVelocity.y < -0.1f)
+        {
+            this.isFalling = true;
+            this.FallStartY = this.transform.position.y;
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            if (this.isFalling)
+            {
+                var fallDistance = this.FallStartY - this.transform.position.y;
+                if (fallDistance > this.FallDamageThreshold)
+                {
+                    var damage = Mathf.CeilToInt((fallDistance - this.FallDamageThreshold) * this.FallDamagePerMeter);
+                    this.PlayerStatus.HP -= damage;
+                    Debug.Log($"Player took {damage} fall damage. Remaining HP: {this.PlayerStatus.HP}");
+                }
+                this.isFalling = false;
+            }
+
+            this.IsGrounded = true;
+        }
     }
 }
