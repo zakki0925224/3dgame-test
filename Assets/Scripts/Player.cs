@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -68,6 +69,14 @@ public class Player : MonoBehaviour
         {
             this.isFalling = true;
             this.FallStartY = this.transform.position.y;
+        }
+
+        // HP
+        if (this.PlayerStatus.HP <= 0)
+        {
+            // game over
+            Debug.Log("Game Over! Player has died.");
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
 
